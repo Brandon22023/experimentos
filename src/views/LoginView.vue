@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import FormField from '@/components/FormField.vue'
 import { useAuthStore } from '@/stores/auth'
 import { validateEmail } from '@/utils/validators'
+import { DEMO_ACCOUNTS, type DemoAccount } from '@/data/demoUsers'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -21,6 +22,13 @@ function validate(): boolean {
   errors.email = validateEmail(form.email)
   errors.password = form.password ? null : 'La contraseña es obligatoria.'
   return !errors.email && !errors.password
+}
+
+function fillDemo(account: DemoAccount) {
+  form.email = account.email
+  form.password = account.password
+  errors.email = null
+  errors.password = null
 }
 
 async function onSubmit() {
@@ -73,6 +81,21 @@ async function onSubmit() {
         ¿No tienes cuenta?
         <RouterLink :to="{ name: 'register' }">Regístrate</RouterLink>
       </p>
+
+      <div class="demo-box">
+        <p>Cuentas de prueba (clic para rellenar):</p>
+        <div class="demo-actions">
+          <button
+            v-for="account in DEMO_ACCOUNTS"
+            :key="account.email"
+            type="button"
+            class="chip"
+            @click="fillDemo(account)"
+          >
+            {{ account.role === 'admin' ? 'Admin' : 'Usuario' }}
+          </button>
+        </div>
+      </div>
     </form>
   </main>
 </template>
