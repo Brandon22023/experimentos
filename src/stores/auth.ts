@@ -9,6 +9,8 @@ const authService: AuthService = localAuthService
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(authService.getCurrentUser())
   const isAuthenticated = computed(() => user.value !== null)
+  const role = computed(() => user.value?.role ?? null)
+  const isAdmin = computed(() => role.value === 'admin')
 
   async function login(payload: LoginPayload): Promise<void> {
     user.value = await authService.login(payload)
@@ -23,5 +25,5 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
   }
 
-  return { user, isAuthenticated, login, register, logout }
+  return { user, isAuthenticated, role, isAdmin, login, register, logout }
 })
